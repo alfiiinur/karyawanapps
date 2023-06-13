@@ -12,7 +12,7 @@ class Karyawan extends Model
     protected $fillable = [
         'nama',
         'ttl',
-        // 'no_rek',
+        'no_rek',
         'alamat',
         'no_telepon',
     ];
