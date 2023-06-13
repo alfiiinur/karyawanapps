@@ -7,6 +7,7 @@ use App\Models\Absensi;
 use App\Models\Karyawan;
 // use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class AbsensiController extends Controller
 {
@@ -23,29 +24,39 @@ class AbsensiController extends Controller
         return view('admin.absen', compact('karyawan'));
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'karyawan_id' => 'required',
-            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'tanggal_masuk' => 'required',
-            'keterangan' => 'required',
-        ]);
+ public function store(Request $request)
+{
+    // $request->validate([
+    //     'karyawan_id' => 'required',
+    //     'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+    //     // 'tanggal_masuk' => 'required',
+    //     'keterangan' => 'required',
+    // ]);
 
-        $data = $request->all();
+    $data = $request->all();
+    // dd($data);
+    if ($request->hasFile('foto')) {
+        $foto = $request->file('foto');
 
-        if ($request->hasFile('foto')) {
-            $foto = $request->file('foto');
-            $nama_foto = time() . '_' . $foto->getClientOriginalName();
+        // Upload gambar ke ImgBB
+        $response = Http::attach(
+            'image',
+            file_get_contents($foto),
+            $foto->getClientOriginalName()
+        )->post('https://api.imgbb.com/1/upload?key=' . env('IMGBB_API_KEY'));
 
-            // Upload file ke penyimpanan Railyway (misalnya menggunakan S3)
-            Storage::disk('s3')->putFileAs('images', $foto, $nama_foto);
-
-            $data['foto'] = $nama_foto;
+        // Periksa respon dan dapatkan URL gambar
+        if ($response->ok()) {
+            $responseData = $response->json();
+            $data['foto'] = $responseData['data']['url'];
+        } else {
+            // Handle error jika upload gagal
+            return back()->with('error', 'Upload gambar gagal: ' . $response->body());
         }
-
-        Absensi::create($data);
-
-        return redirect('/absensi')->with('success', 'Data berhasil disimpan.');
     }
+
+    Absensi::create($data);
+
+    return redirect('/absensi')->with('success', 'Data berhasil disimpan.');
+}
 }

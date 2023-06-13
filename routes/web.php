@@ -62,7 +62,7 @@ Route::group(['middleware' => 'auth'], function() {
         // Route::post('/absensi', [AbsensiController::class, 'store'])->name('absensi.store');
         Route::get('absensi', [DataController::class, 'index'])->name('absensi.index');
         Route::get('/data/create', [DataController::class, 'create'])->name('data.create');
-        Route::post('/data', [DataController::class, 'store'])->name('data.store');
+        Route::post('/data', [AbsensiController::class, 'store'])->name('data.store');
 
 
 

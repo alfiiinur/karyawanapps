@@ -12,7 +12,7 @@ class Absensi extends Model
         'id',
         'karyawan_id',
         'foto',
-        'tanggal_masuk',
+        // 'tanggal_masuk',
         'keterangan',
 
     ];

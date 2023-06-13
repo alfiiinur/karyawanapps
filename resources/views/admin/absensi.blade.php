@@ -158,8 +158,8 @@
                                                 @endif
                                             </td>
 
-                                            <td><img src="{{ asset('images/' . $item->foto) }}" width="100"></td>
-                                            <td>{{ $item->tanggal_masuk }}</td>
+                                            <td><img src="{{ $item->foto }}" width="100"></td>
+                                            <td>{{ $item->created_at }}</td>
                                             <td>{{ $item->keterangan }}</td>
 
 
