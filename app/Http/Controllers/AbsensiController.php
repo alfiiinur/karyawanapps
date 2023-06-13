@@ -33,7 +33,7 @@ class AbsensiController extends Controller
         ]);
 
         $data = $request->all();
-        
+
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto');
             $nama_foto = time() . '_' . $foto->getClientOriginalName();
