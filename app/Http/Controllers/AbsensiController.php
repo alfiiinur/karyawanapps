@@ -33,11 +33,14 @@ class AbsensiController extends Controller
         ]);
 
         $data = $request->all();
-
+        
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto');
             $nama_foto = time() . '_' . $foto->getClientOriginalName();
-            $foto->move(public_path('images'), $nama_foto);
+
+            // Upload file ke penyimpanan Railyway (misalnya menggunakan S3)
+            Storage::disk('s3')->putFileAs('images', $foto, $nama_foto);
+
             $data['foto'] = $nama_foto;
         }
 
